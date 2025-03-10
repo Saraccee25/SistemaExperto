@@ -28,13 +28,37 @@ def calcular_inventario():
         else:
             descripcion = "Se recomienda hacer un pedido alto."
         
-        messagebox.showinfo("Resultado", f"Acción recomendada: {resultado:.2f}\n{descripcion}")
+        # Calcular los grados de pertenencia
+        stockBajo = fuzz.interp_membership(stock.universe, stock['bajo'].mf, valorStock)
+        stockMedio = fuzz.interp_membership(stock.universe, stock['medio'].mf, valorStock)
+        stockAlto = fuzz.interp_membership(stock.universe, stock['alto'].mf, valorStock)
         
-        stock.view()
-        demanda.view()
-        tiempo_demanda.view()
+        demandaBaja = fuzz.interp_membership(demanda.universe, demanda['baja'].mf, valorDemanda)
+        demandaMedia = fuzz.interp_membership(demanda.universe, demanda['media'].mf, valorDemanda)
+        demandaAlta = fuzz.interp_membership(demanda.universe, demanda['alta'].mf, valorDemanda)
+        
+        tiempoCorto = fuzz.interp_membership(tiempo_demanda.universe, tiempo_demanda['corto'].mf, valorTiempoDemanda)
+        tiempoProlongado = fuzz.interp_membership(tiempo_demanda.universe, tiempo_demanda['prolongado'].mf, valorTiempoDemanda)
+        
+        # Mostrar en interfaz
+        detalles = f"Acción recomendada: {resultado:.2f}\n{descripcion}\n\n"
+        detalles += "Grados de Pertenencia:\n"
+        detalles += f"Stock: Bajo={stockBajo:.2f}, Medio={stockMedio:.2f}, Alto={stockAlto:.2f}\n"
+        detalles += f"Demanda: Baja={demandaBaja:.2f}, Media={demandaMedia:.2f}, Alta={demandaAlta:.2f}\n"
+        detalles += f"Tiempo de Demanda: Corto={tiempoCorto:.2f}, Prolongado={tiempoProlongado:.2f}\n"
+        
+        messagebox.showinfo("Resultado", detalles)
+        
+        # Mostrar gráficos en orden
         accion.view(sim=inventario_sim)
         plt.show()
+        stock.view()
+        plt.show()
+        demanda.view()
+        plt.show()
+        tiempo_demanda.view()
+        plt.show()
+        
     except ValueError:
         messagebox.showerror("Error", "Por favor, ingrese valores numéricos válidos.")
 
