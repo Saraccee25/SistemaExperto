@@ -18,7 +18,21 @@ def calcular_inventario():
         inventario_sim.compute()
         resultado = inventario_sim.output['accion']
         
-        messagebox.showinfo("Resultado", f"Acción recomendada: {resultado:.2f}")
+        # Interpretación del resultado
+        if resultado < 25:
+            descripcion = "No es necesario realizar un pedido."
+        elif 25 <= resultado < 50:
+            descripcion = "Se recomienda hacer un pedido bajo."
+        elif 50 <= resultado < 75:
+            descripcion = "Se recomienda hacer un pedido medio."
+        else:
+            descripcion = "Se recomienda hacer un pedido alto."
+        
+        messagebox.showinfo("Resultado", f"Acción recomendada: {resultado:.2f}\n{descripcion}")
+        
+        stock.view()
+        demanda.view()
+        tiempo_demanda.view()
         accion.view(sim=inventario_sim)
         plt.show()
     except ValueError:
