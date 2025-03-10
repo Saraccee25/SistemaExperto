@@ -49,6 +49,11 @@ def calcular_inventario():
         
         messagebox.showinfo("Resultado", detalles)
         
+        # Limpiar los campos de entrada después de la ejecución
+        entry_stock.delete(0, tk.END)
+        entry_demanda.delete(0, tk.END)
+        entry_tiempo.delete(0, tk.END)
+        
         # Mostrar gráficos en orden
         accion.view(sim=inventario_sim)
         plt.show()
@@ -94,6 +99,7 @@ rule5 = ctrl.Rule(stock['bajo'] & demanda['baja'] & tiempo_demanda['prolongado']
 rule6 = ctrl.Rule(stock['medio'] & demanda['alta'] & tiempo_demanda['corto'], accion['pedido_medio'])
 rule7 = ctrl.Rule(stock['medio'] & demanda['baja'] & tiempo_demanda['corto'], accion['pedido_bajo'])
 rule8 = ctrl.Rule(stock['bajo'] & demanda['alta'] & tiempo_demanda['prolongado'], accion['pedido_alto'])
+rule9 = ctrl.Rule(stock['alto'] & demanda['alta'] & tiempo_demanda['corto'], accion['no_pedir'])
 
 # Crear sistema de control difuso
 inventario_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8])
