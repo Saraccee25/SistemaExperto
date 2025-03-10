@@ -18,7 +18,7 @@ def calcular_inventario():
         inventario_sim.compute()
         resultado = inventario_sim.output['accion']
         
-        # Interpretación del resultado
+        # interpretacion del resultado
         if resultado < 25:
             descripcion = "No es necesario realizar un pedido."
         elif 25 <= resultado < 50:
@@ -28,7 +28,7 @@ def calcular_inventario():
         else:
             descripcion = "Se recomienda hacer un pedido alto."
         
-        # Calcular los grados de pertenencia
+        # calcular los grados de pertenencia
         stockBajo = fuzz.interp_membership(stock.universe, stock['bajo'].mf, valorStock)
         stockMedio = fuzz.interp_membership(stock.universe, stock['medio'].mf, valorStock)
         stockAlto = fuzz.interp_membership(stock.universe, stock['alto'].mf, valorStock)
@@ -40,7 +40,7 @@ def calcular_inventario():
         tiempoCorto = fuzz.interp_membership(tiempo_demanda.universe, tiempo_demanda['corto'].mf, valorTiempoDemanda)
         tiempoProlongado = fuzz.interp_membership(tiempo_demanda.universe, tiempo_demanda['prolongado'].mf, valorTiempoDemanda)
         
-        # Calcular la activación de las reglas difusas
+        # calcular la activacion de las reglas difusas
         activeRules = {
             "Regla 1": np.fmin(np.fmin(stockBajo, demandaAlta), tiempoCorto),
             "Regla 2": np.fmin(np.fmin(stockBajo, demandaMedia), tiempoProlongado),
@@ -54,7 +54,7 @@ def calcular_inventario():
             "Regla 10": np.fmin(np.fmin(stockBajo, demandaBaja), tiempoCorto)
         }
         
-        # Mostrar en interfaz
+        # mostrar en interfaz
         detalles = f"Acción recomendada: {resultado:.2f}\n{descripcion}\n\n"
         detalles += "Grados de Pertenencia:\n"
         detalles += f"Stock: Bajo={stockBajo:.2f}, Medio={stockMedio:.2f}, Alto={stockAlto:.2f}\n"
@@ -80,7 +80,7 @@ def calcular_inventario():
         inventario_sim.compute()
         resultado = inventario_sim.output['accion']
         
-        # Interpretación del resultado
+        # interpretación del resultado
         if resultado < 25:
             descripcion = "No es necesario realizar un pedido."
         elif 25 <= resultado < 50:
@@ -90,7 +90,7 @@ def calcular_inventario():
         else:
             descripcion = "Se recomienda hacer un pedido alto."
         
-        # Calcular los grados de pertenencia
+        # calcular los grados de pertenencia
         stockBajo = fuzz.interp_membership(stock.universe, stock['bajo'].mf, valorStock)
         stockMedio = fuzz.interp_membership(stock.universe, stock['medio'].mf, valorStock)
         stockAlto = fuzz.interp_membership(stock.universe, stock['alto'].mf, valorStock)
@@ -102,7 +102,7 @@ def calcular_inventario():
         tiempoCorto = fuzz.interp_membership(tiempo_demanda.universe, tiempo_demanda['corto'].mf, valorTiempoDemanda)
         tiempoProlongado = fuzz.interp_membership(tiempo_demanda.universe, tiempo_demanda['prolongado'].mf, valorTiempoDemanda)
         
-        # Mostrar en interfaz
+        # ostrar en interfaz
         detalles = f"Acción recomendada: {resultado:.2f}\n{descripcion}\n\n"
         detalles += "Grados de Pertenencia:\n"
         detalles += f"Stock: Bajo={stockBajo:.2f}, Medio={stockMedio:.2f}, Alto={stockAlto:.2f}\n"
@@ -111,12 +111,12 @@ def calcular_inventario():
         
         messagebox.showinfo("Resultado", detalles)
         
-        # Limpiar los campos de entrada después de la ejecución
+        # limpiar los campos de entrada despues de la ejecucion
         entry_stock.delete(0, tk.END)
         entry_demanda.delete(0, tk.END)
         entry_tiempo.delete(0, tk.END)
         
-        # Mostrar gráficos en orden
+        # mostrar graficos en orden
         accion.view(sim=inventario_sim)
         plt.show()
         stock.view()
@@ -129,13 +129,13 @@ def calcular_inventario():
     except ValueError:
         messagebox.showerror("Error", "Por favor, ingrese valores numéricos válidos.")
 
-# Definición de variables difusas
+# definicion de variables difusas
 stock = ctrl.Antecedent(np.arange(0, 101, 1), 'stock')
 demanda = ctrl.Antecedent(np.arange(0, 101, 1), 'demanda')
 tiempo_demanda = ctrl.Antecedent(np.arange(0, 101, 1), 'tiempo_demanda')
 accion = ctrl.Consequent(np.arange(0, 101, 1), 'accion')
 
-# Funciones de membresía
+# funciones de membresia
 stock['bajo'] = fuzz.trapmf(stock.universe, [0, 0, 20, 40])
 stock['medio'] = fuzz.trimf(stock.universe, [30, 50, 70])
 stock['alto'] = fuzz.trapmf(stock.universe, [60, 80, 100, 100])
@@ -152,7 +152,7 @@ accion['pedido_bajo'] = fuzz.trimf(accion.universe, [30, 50, 70])
 accion['pedido_medio'] = fuzz.trapmf(accion.universe, [60, 80, 100, 100])
 accion['pedido_alto'] = fuzz.trapmf(accion.universe, [80, 90, 100, 100])
 
-# Definición de reglas difusas
+# definicion de reglas difusas
 rule1 = ctrl.Rule(stock['bajo'] & demanda['alta'] & tiempo_demanda['corto'], accion['pedido_medio'])
 rule2 = ctrl.Rule(stock['bajo'] & demanda['media'] & tiempo_demanda['prolongado'], accion['pedido_medio'])
 rule3 = ctrl.Rule(stock['medio'] & demanda['media'], accion['pedido_bajo'])
@@ -164,16 +164,16 @@ rule8 = ctrl.Rule(stock['bajo'] & demanda['alta'] & tiempo_demanda['prolongado']
 rule9 = ctrl.Rule(stock['alto'] & demanda['alta'] & tiempo_demanda['corto'], accion['no_pedir'])
 rule10 = ctrl.Rule(stock['bajo'] & demanda['baja'] & tiempo_demanda['corto'], accion['pedido_bajo'])
 
-# Crear sistema de control difuso
+# crear sistema de control difuso
 inventario_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10])
 inventario_sim = ctrl.ControlSystemSimulation(inventario_ctrl)
 
-# Crear la interfaz gráfica con Tkinter
+# crear la interfaz grafica con tkinter
 root = tk.Tk()
 root.title("Gestión de Inventario")
 root.geometry("300x250")
 
-# Etiquetas y entradas
+# etiquetas y entradas
 label_stock = tk.Label(root, text="Nivel de Stock:")
 label_stock.pack()
 entry_stock = tk.Entry(root)
