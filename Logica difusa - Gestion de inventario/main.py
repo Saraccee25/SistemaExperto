@@ -125,6 +125,8 @@ def calcular_inventario():
         plt.show()
         tiempo_demanda.view()
         plt.show()
+        accion.view()  
+        plt.show()
         
     except ValueError:
         messagebox.showerror("Error", "Por favor, ingrese valores numéricos válidos.")
