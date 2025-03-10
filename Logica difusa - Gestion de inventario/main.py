@@ -102,7 +102,7 @@ rule8 = ctrl.Rule(stock['bajo'] & demanda['alta'] & tiempo_demanda['prolongado']
 rule9 = ctrl.Rule(stock['alto'] & demanda['alta'] & tiempo_demanda['corto'], accion['no_pedir'])
 
 # Crear sistema de control difuso
-inventario_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9)
+inventario_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8])
 inventario_sim = ctrl.ControlSystemSimulation(inventario_ctrl)
 
 # Crear la interfaz gráfica con Tkinter
