@@ -66,51 +66,6 @@ def calcular_inventario():
         
         messagebox.showinfo("Resultado", detalles)
         
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese valores numéricos válidos.")
-    try:
-        valorStock = float(entry_stock.get())
-        valorDemanda = float(entry_demanda.get())
-        valorTiempoDemanda = float(entry_tiempo.get())
-
-        inventario_sim.input['stock'] = valorStock
-        inventario_sim.input['demanda'] = valorDemanda
-        inventario_sim.input['tiempo_demanda'] = valorTiempoDemanda
-
-        inventario_sim.compute()
-        resultado = inventario_sim.output['accion']
-        
-        # interpretación del resultado
-        if resultado < 25:
-            descripcion = "No es necesario realizar un pedido."
-        elif 25 <= resultado < 50:
-            descripcion = "Se recomienda hacer un pedido bajo."
-        elif 50 <= resultado < 75:
-            descripcion = "Se recomienda hacer un pedido medio."
-        else:
-            descripcion = "Se recomienda hacer un pedido alto."
-        
-        # calcular los grados de pertenencia
-        stockBajo = fuzz.interp_membership(stock.universe, stock['bajo'].mf, valorStock)
-        stockMedio = fuzz.interp_membership(stock.universe, stock['medio'].mf, valorStock)
-        stockAlto = fuzz.interp_membership(stock.universe, stock['alto'].mf, valorStock)
-        
-        demandaBaja = fuzz.interp_membership(demanda.universe, demanda['baja'].mf, valorDemanda)
-        demandaMedia = fuzz.interp_membership(demanda.universe, demanda['media'].mf, valorDemanda)
-        demandaAlta = fuzz.interp_membership(demanda.universe, demanda['alta'].mf, valorDemanda)
-        
-        tiempoCorto = fuzz.interp_membership(tiempo_demanda.universe, tiempo_demanda['corto'].mf, valorTiempoDemanda)
-        tiempoProlongado = fuzz.interp_membership(tiempo_demanda.universe, tiempo_demanda['prolongado'].mf, valorTiempoDemanda)
-        
-        # ostrar en interfaz
-        detalles = f"Acción recomendada: {resultado:.2f}\n{descripcion}\n\n"
-        detalles += "Grados de Pertenencia:\n"
-        detalles += f"Stock: Bajo={stockBajo:.2f}, Medio={stockMedio:.2f}, Alto={stockAlto:.2f}\n"
-        detalles += f"Demanda: Baja={demandaBaja:.2f}, Media={demandaMedia:.2f}, Alta={demandaAlta:.2f}\n"
-        detalles += f"Tiempo de Demanda: Corto={tiempoCorto:.2f}, Prolongado={tiempoProlongado:.2f}\n"
-        
-        messagebox.showinfo("Resultado", detalles)
-        
         # limpiar los campos de entrada despues de la ejecucion
         entry_stock.delete(0, tk.END)
         entry_demanda.delete(0, tk.END)
