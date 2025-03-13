@@ -18,15 +18,14 @@ def calcular_inventario():
         inventario_sim.compute()
         resultado = inventario_sim.output['accion']
         
-        # interpretacion del resultado
-        if resultado < 25:
-            descripcion = "No es necesario realizar un pedido."
-        elif 25 <= resultado < 50:
-            descripcion = "Se recomienda hacer un pedido bajo."
-        elif 50 <= resultado < 75:
-            descripcion = "Se recomienda hacer un pedido medio."
-        else:
-            descripcion = "Se recomienda hacer un pedido alto."
+        # Interpretación basada en la activación de reglas difusas
+        acciones = {
+            'No realizar pedido': fuzz.interp_membership(accion.universe, accion['no_pedir'].mf, resultado),
+            'Realizar un pedido bajo': fuzz.interp_membership(accion.universe, accion['pedido_bajo'].mf, resultado),
+            'Realizar un pedido medio': fuzz.interp_membership(accion.universe, accion['pedido_medio'].mf, resultado),
+            'Realizar un pedido alto': fuzz.interp_membership(accion.universe, accion['pedido_alto'].mf, resultado)
+        }
+        descripcion = max(acciones, key=acciones.get)
         
         # calcular los grados de pertenencia
         stockBajo = fuzz.interp_membership(stock.universe, stock['bajo'].mf, valorStock)
